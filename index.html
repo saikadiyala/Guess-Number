@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Storage Experiment</title>
+</head>
+
+<body>
+    <h1 id="greet">Generating a number</h1>
+    <div id="num"></div>
+    <input type="text" id="in">
+    <button id="btn">Generate</button>
+    <button id="replay">Replay</button>
+    <div id="txt"></div>
+    <script>
+         let $greet = document.getElementById("greet");
+        let $num = document.getElementById("num");
+        let $btn = document.getElementById("btn");
+        let $txt = document.getElementById("txt");
+        let $in = document.getElementById("in");
+        let $replay = document.getElementById("replay");
+
+        if (window.location.hash != "#generated")
+        {
+             $in.style.display = "none";
+            $replay.style.display = "none";
+
+            $btn.addEventListener("click", function () {
+                let num = randomInteger(100000, 999999);
+
+                $num.innerText = num;
+
+                localStorage.setItem('num', num);
+
+                $txt.innerText = "Refreshing the page in four seconds";
+
+                setTimeout(function () {
+                    window.location.hash="generated";
+                    window.location.reload(1);
+                }, 4000);
+            });
+
+        }
+         else if(window.location.hash= "#generated")
+        {
+              $greet.innerText="Guess";
+            $num.style.display = "none";
+            $txt.style.display = "none";
+            $btn.innerText = "Guess";
+
+            $btn.addEventListener("click", function () {
+                let in_num_str = $in.value.toString();
+
+                let set_num_str = localStorage.getItem('num').toString();
+
+                let matched_digits_count = 0;
+
+                for(let i = 0, j = 0; i < set_num_str.length && j < in_num_str.length; i++, j++){
+                    if(in_num_str[i] === set_num_str[j]){
+                        matched_digits_count++;
+                    }
+                }
+
+                $txt.innerText = "No. of digits matched: " + matched_digits_count.toString();
+
+                $txt.style.display = "block";
+
+                $replay.style.display = "inline";
+            });
+
+            $replay.addEventListener("click", function(){
+                window.location.href = window.location.href.split("#")[0];
+            });
+        }
+
+        function randomInteger(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+    </script>
+</body>
+
+</html>
